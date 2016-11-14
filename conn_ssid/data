@@ -1,0 +1,99 @@
+#!/bin/bash
+exec 2>error.log
+type=OPEN
+encty=OPEN
+#while [ -n "$1" ];do
+#	case "$1" in
+#		-s) ssid="$2"
+#		    shift;;
+#		-a) type=WPAPSK;;
+#		-n) type=WPA2PSK;;
+#		-c) encty=AES;;
+#		-t) encty=TKIP;;
+#		-p) password="$2" 
+#		    shift;;
+#		*) type=OPEN
+#		   encty=OPEN;;
+#	esac
+#	shift
+#done
+
+while getopts :s:p:anctbdefg:hijklmoqruvwxyz var;do
+	case "$var" in
+		s) ssid="$OPTARG";;
+		p) password="$OPTARG";;
+		a) type=WPAPSK;;
+		n) type=WPA2PSK;;
+		c) encty=AES;;
+		t) encty=TKIP;;
+		g) gw="$OPTARG";;
+		h) help=HELP;;
+		*) echo "unknown otpion -$var";;
+	esac
+done
+
+if [ -n "$help" ] || (( $# == 0  ));then
+	echo "-s ssidname, this para is needed"
+	echo "-g gateway, if not give this para, will use 127.0.0.1 instead"
+	echo "-p password, option para"
+	echo "-a, instead wpapsk"
+	echo "-n, instead wpa2psk"
+	echo "-c, instead ccmp(aes)"
+	echo "-t, instead tkip"
+	echo "-h, display this info"
+	echo "if a/m/c/t isn't give all, will use open"
+	exit 1
+fi
+
+if [ -z "$ssid" ];then
+	echo "-s is need"
+	exit 5
+fi
+
+if [ -z "$password" ];then
+	passowrd=12345678
+fi
+
+if [ -z "$gw" ];then
+	gw=127.0.0.1
+fi
+
+echo "ssid=$ssid, encty=$encty, type=$type"
+
+for((j=0;j<3;j++));do
+	dhclient ra0 -r
+	ifconfig ra0 down
+	ifconfig ra0 up
+	iwpriv ra0 set NetworkType=Infra
+	iwpriv ra0 set AuthMode="$type"
+	iwpriv ra0 set EncrypType="$encty"
+	if [ "$type" != "OPEN" ];then
+		iwpriv ra0 set "$type"="$password"
+	fi
+	iwpriv ra0 set SSID="$ssid"
+	for((i=0; i<10; i++));do
+		sleep 2
+		msg=`iwpriv ra0 connStatus`
+		echo $msg
+		if [[ "$msg" != *Disconnected ]];then
+			conn="true"
+			break
+		fi
+	done
+	if [[ "$conn" == true ]];then
+		dhclient ra0
+		msg=`ifconfig ra0 | grep Bcast | awk -F: '{print $2}' | awk -F" " '{print $1}'`
+		if [ -z $msg ];then
+			echo "get ip failed"
+		else
+			pingstr = `ping $gw -c 5`
+			if [[ "$pingstr" == "*100% packet loss*" ]];then
+				echo "ping $gw failed, retry"
+				continue
+			fi
+			echo "connected succeed"
+			echo "ip address is "$msg
+			break
+		fi
+	fi
+done
