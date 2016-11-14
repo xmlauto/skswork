@@ -4,3 +4,7 @@ step1: 检查AP是否通过option43上线
     获取AP-eth0和AP-VLAN1的mac地址
     close_connect_ap   ap
     等待指定MAC的AP上线    ${ap_net}    1    ${template_name}     ${ap_eth0_mac}
+    
+1.ap重启后，没有判断是否重启就马上去交换机获取ap的地址后进行连接对ap进行操作（此时ap有可能才重启），导致下发命令失败(建议重启ap后，增加ping检查)
+2.ap上恢复出厂设置重启后，ac上的show ap database表项不会马上down掉，此时立刻判断ap上线，没有作用（建议检查show capwap wtp表项）
+3.创建镜像的时候 CISCO_P8 口，一定要up起来，要不然抓不了包
