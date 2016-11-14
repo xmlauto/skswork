@@ -1,11 +1,6 @@
-5
-Static_Route_0120.txt
-802.11a_b_g_n_0250.txt
-location_0110.txt
-定时删除SSID_0010.txt
-无线接口管理_0040.txt
+0
 ************************************************************no support************************************************************
-153
+157
 Broadcast_Suppression_0180.txt
 Broadcast_Suppression_0190.txt
 Broadcast_Suppression_0360.txt
@@ -112,6 +107,7 @@ wds_0330.txt
 802.11a_b_g_n_0220.txt
 802.11a_b_g_n_0230.txt
 802.11a_b_g_n_0240.txt
+802.11a_b_g_n_0250.txt
 802.11a_b_g_n_0270.txt
 802.11a_b_g_n_0290.txt
 802.11a_b_g_n_0340.txt
@@ -143,14 +139,17 @@ wds_0330.txt
 802.11n_ac_0320.txt
 802.11n_ac_0330.txt
 802.11n_ac_0440.txt
+location_0110.txt
 定时关断射频_0110.txt
 定时关断射频_0140.txt
 定时关断射频_0160.txt
 定时关断射频_0170.txt
 定时关断射频_0210.txt
+定时删除SSID_0010.txt
 定时删除SSID_0020.txt
 定时删除SSID_0040.txt
 定时删除SSID_0060.txt
+无线接口管理_0040.txt
 无线接口管理_0310.txt
 无线接口管理_0380.txt
 无线接口管理_0420.txt
