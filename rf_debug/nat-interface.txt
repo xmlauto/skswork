@@ -1,0 +1,6 @@
+step1: 检查AP是否通过option43上线
+    ${ap_mac}    ${ap_ip}    Wait Until Keyword Succeeds    60s    10s    获取指定网段内的某个AP的MAC和IP地址    ${ap_net}
+    connect_ap_from_cisco    ap    ${Cisco_host}     ${ap_ip}
+    获取AP-eth0和AP-VLAN1的mac地址
+    close_connect_ap   ap
+    等待指定MAC的AP上线    ${ap_net}    1    ${template_name}     ${ap_eth0_mac}
