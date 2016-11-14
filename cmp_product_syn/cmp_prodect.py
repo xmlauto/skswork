@@ -57,7 +57,7 @@ exclude_file = [
                  #不支持的功能
                  "802.11n_ac*",
                  #业务问题
-                 "AP_VLAN_0030", "Restore_Factory_Default_0030",
+                 "AP_VLAN_0030", "Restore_Factory_Default_0030", "NAT-interface_0060", "NAT-interface_0270",
                  #5G
                  "Broadcast_Suppression_0180", "Broadcast_Suppression_0190", "Broadcast_Suppression_0360", "Broadcast_Suppression_0370", 
                  "Broadcast_Suppression_0380", "Broadcast_Suppression_0430", "Broadcast_Suppression_0470", "Broadcast_Suppression_0480",
@@ -76,9 +76,10 @@ exclude_file = [
                  "wds_0020", "wds_0140", "wds_0160", "wds_0180", "wds_0200", "wds_0220", "wds_0240", "wds_0260", "wds_0280", "wds_0300",
                  "802.11a_b_g_n_0040", "802.11a_b_g_n_0050", "802.11a_b_g_n_0060", "802.11a_b_g_n_0120", "802.11a_b_g_n_0150", "802.11a_b_g_n_0200",
                  "802.11a_b_g_n_0210", "802.11a_b_g_n_0220", "802.11a_b_g_n_0230", "802.11a_b_g_n_0240", "802.11a_b_g_n_0270", "802.11a_b_g_n_0290",
-                 "802.11a_b_g_n_0340", "802.11a_b_g_n_0360", "802.11a_b_g_n_0380",
+                 "802.11a_b_g_n_0340", "802.11a_b_g_n_0360", "802.11a_b_g_n_0380", "802.11a_b_g_n_0250",
                  "location_0110",
-                 "定时关断射频_0110", "定时关断射频_0140", "定时关断射频_0160", "定时关断射频_0170", "定时删除SSID_0020", "定时删除SSID_0040", "定时删除SSID_0060",
+                 "定时关断射频_0110", "定时关断射频_0140", "定时关断射频_0160", "定时关断射频_0170", "定时关断射频_0210",
+                 "定时删除SSID_0020", "定时删除SSID_0040", "定时删除SSID_0060", "定时删除SSID_0010",
                  "无线接口管理_0040",  "无线接口管理_0310", "无线接口管理_0380", "无线接口管理_0420",
                  "最大用户数限制_0040", "最大用户数限制_0050", "最大用户数限制_0060",
                  "频点设置0020", "频点设置0050",

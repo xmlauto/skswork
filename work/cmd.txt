@@ -18,7 +18,7 @@ Capwap_0790
 debug环境
 pybot -i 断网保活_0010 -v top:full_top_2_3_21.txt -L Trace -d log\WOA5200-80P\debug -P  SKS_product\Lib_Mainline SKS_product\Testcase\主线\AP\WOA5200-80P
 pybot -i EAP_0170 -v top:full_top_5_22_80s.txt -L Trace -d log\WIA3200-80S\debug -P  SKS_product\Lib_Mainline SKS_product\Testcase\主线\AP\WIA3200-80S
-pybot -i AC发现方式_0020 -v top:test\debug_chengfang.txt -L Trace -d log\主线_for_HW\debug -P  SKS_product\Lib_for_HW SKS_product\Testcase\主线_for_HW\AP\WIA3200-80
+pybot -i NAT* -e exclude -v top:test\debug_ruowen.txt -L Trace -d log\主线_for_HW\debug -P  SKS_product\Lib_for_HW SKS_product\Testcase\主线_for_HW\AP\WIA3200-80
 环境检查
 pybot -i upgrade -v ap_num:3 -v top:full_top_2_3_21.txt -L Trace -d log\upgrade -P SKS_product\Lib_Mainline 09.tools\01.upgrade
 pybot -i upgrade -v ap_num:3 -v top:full_top_5_22_80s.txt -L Trace -d log\upgrade -P SKS_product\Lib 09.tools\01.upgrade
