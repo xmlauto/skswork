@@ -1,0 +1,74 @@
+*** Settings ***
+Force Tags        bad
+Resource          CMDResource.txt
+Resource          ${EXECDIR}${/}SKS_product${/}Top${/}${top}
+
+SuiteSetup        登陆并且初始化设备
+SuiteTeardown     恢复配置并退出设备
+
+*** Variables ***
+${vlan2_net_head}      81.81.84
+${Cisco_to_AP_vlan}      auto_1
+
+*** Test Cases ***
+Step1: apboot后马上对ap又做操作
+    ${ap_ips}    ${ap_ports}    ${mac}  等待AP上线  ac  ${vlan2_net_head}  auto_template_214  1
+    set suite variable  ${ap_ip}  ${ap_ips[0]}
+    ap_boot  ac  --type all
+    connect_ap_from_cisco  ap  ${Cisco_host}  ${ap_ip}
+    #do .....
+    close_connect_ap  ap
+    check_AC_ping_result  ac  ${ap_ip}  5  1  false
+
+Step2: ap_reboot后马上判断ap是否上线
+    等待AP上线  ac  ${vlan2_net_head}  auto_template_214  1
+    connect_ap_from_cisco  ap  ${Cisco_host}  ${ap_ip}
+    ap_reboot  ap
+    close_connect_ap  ap
+    check_AC_ping_result  ac  ${ap_ip}  5  1  false
+    wait until keyword succeeds  180s  1s  等待AP下线
+
+#3. 满配的脚本，注意变量，有可能会把需要的东西给删除了
+#4. 配置镜像抓包，一定要把交换机和tester之间的端口up起来
+#5. 配置NAT后，AP重新拿地址，清理环境的时候，把AP恢复到默认模式后，在dhcp服务器上把无用的AP地址清理掉
+
+*** Keywords ***
+登陆并且初始化设备
+    connect_to_ac    ac    ${AC1_host}
+    connect_to_cisco    cisco    ${Cisco_host}
+
+恢复配置并退出设备
+    close_connect_ac    ac
+    close_connect_cisco    cisco
+
+等待AP下线
+    ${msg}  show_ap_database  ac
+    show_capwap  ac  --wtp
+    check_regexp_result  down  ${msg}
+
+等待AP上线
+    [Arguments]    ${ac}    ${ap_network}    ${ap_template}    ${expect_ap_num}
+    :FOR    ${i}    IN RANGE    18
+    \    ${ret}    show_ap_database    ${ac}
+    \    ${ap_ips}    find_pattern_from_noenterstring    ${ret}    \\s+(${ap_network}.\\d{1,3})\\s+\\d+.*?${ap_template}\\s+up
+    \    ${ap_ports}    find_pattern_from_noenterstring    ${ret}    \\s+${ap_network}.\\d{1,3}\\s+(\\d+).*?${ap_template}\\s+up
+    \    ${num}    Get Length    ${ap_ips}
+    \    log    只有${num}个${ap_template} AP上线，期望${expect_ap_num}个AP上线
+    \    exit for loop if    '${num}' == '${expect_ap_num}'
+    \    sleep    10s
+    ${mac}    ${ip}    获取指定网段内的某个AP的MAC地址    ${ap_network}    0
+    Should Not Be Equal  '${mac}'  ':::::'
+    Set Suite Variable  ${ap_mac_ini}  ${mac}
+    run keyword if    '${num}' == '${expect_ap_num}'    log    ap已上线
+    ...    ELSE    检查网络环境及ap查看log  ${ac}  ${ip}
+    [Return]    ${ap_ips}    ${ap_ports}    ${mac}
+
+获取指定网段内的某个AP的MAC地址
+    [Arguments]    ${ap_net}    ${index}
+    ${msg}    cisco_show_dhcp_binding    cisco  --pool-name ${Cisco_to_AP_vlan}
+    ${mac}    find_pattern_from_noenterstring    ${msg}    ${ap_net}.\\d+\\s+(\\w{4}\.\\w{4}\.\\w{4})    ${index}
+    ${ip}    find_pattern_from_noenterstring    ${msg}    (${ap_net}.\\d+)\\s+\\w{4}\.\\w{4}\.\\w{4}    ${index}
+    Should Be True   '${ip}' != '${EMPTY}'
+    Should Be True   '${mac}' != '${EMPTY}'
+    ${ap_mac}    mac_translate_dot_to_colon    ${mac}
+    [Return]    ${ap_mac}    ${ip}
