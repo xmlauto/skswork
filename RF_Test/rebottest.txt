@@ -1,0 +1,35 @@
+﻿*** Settings ***
+Library  Screenshot
+
+*** Keywords ***
+TestKW
+    [Arguments]  ${a}  ${b}=  ${c}=
+    run keyword if  '${b}'!='${Empty}'  set suite variable  ${pool_name}  1
+    log  ${pool_name}
+    Log  ${a}
+    Take Screenshot
+    Run keyword if  '${b}'!='${Empty}'  Log  ${b}
+    mypause
+    Log  ${c}
+
+获取default上线的ap的mac地址
+    ${msg}  show_ap_database  ac
+    check_regexp_result  default\\s+up  ${msg}
+    ${mac}  find_pattern_from_string  ${msg}  (\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)[\\s\\S]*?default\\s+up  0
+    [Return]  ${mac}
+    
+检查apboot后ap为down
+    [Arguments]  ${mac}=  ${ip}=  ${num}=1
+    ${msg}  show_ap_database  ac
+    Run keyword if  "${mac}"!="${Empty}"  check_regexp_result  ${mac}.*?down  ${msg}
+    Run keyword if  "${ip}"!="${Empty}"  check_regexp_result  ${ip}.*?down  ${msg}
+    Run keyword if  "${ip}"=="${Empty}" and "${mac}"=="${Empty}"  check_regexp_result_bytimes  down  ${msg}  ${num}
+
+#wait until keyword succeeds  ${apboottime}  5s  检查apboot后ap为down
+
+#${apboottime}  6m
+   
+*** TestCases ***
+Step1
+    TestKW  "hehe"  c="haha"  b="wawa"
+    
