@@ -1,6 +1,8 @@
 python /root/skspruce/vg_user_login.py autotest 123456 http://1.2.3.4
 iperf -s -p 12345 -i 1 -w 1M -f k
 iperf -c 81.81.87.2 -p 12345 -i 1 -w 1M -t 120 -f k
+python -m robotfixml output.xml fixed.xml
+rebot fixed.xml
 
 copy ap-image: primary-image ftp: 10.2.20.203 user Ftp_1/AmOS-2.5.4.013P00R06.buildserver.2016-11-15.103215 41724 WOA5200-80 A0 AmOS-2.5.4.013P00R06
 copy ap-image: backup-image ftp: 10.2.20.203 user Ftp_1/AmOS-BK-2.5.4.013P00R06.buildserver.2016-11-15.103215 41724 WOA5200-80 A0 AmOS-BK-2.5.4.013P00R06
@@ -12,17 +14,19 @@ copy ftp: 10.2.20.203 user Ftp_1/JadeOS_Gate_pro-2.5.4.200P01R01_SAC700 system: 
 
 \\10.10.22.39\tftpboot\execute_hw  root 123.com
 SKS_product\Top\test\debug_ruowen.txt
-Capwap_0790
 
 debug环境
-pybot -i location_0070 -v top:full_top_2_3_21.txt -L Trace -d log\WOA5200-80P\debug -P  SKS_product\Lib_Mainline SKS_product\Testcase\主线\AP\WOA5200-80P
-pybot -i EAP_0170 -v top:full_top_5_22_80s.txt -L Trace -d log\WIA3200-80S\debug -P  SKS_product\Lib_Mainline SKS_product\Testcase\主线\AP\WIA3200-80S
-pybot -i NAT* -v top:test\debug_ruowen.txt -L Trace -d log\主线_for_HW\debug -P  SKS_product\Lib_for_HW SKS_product\Testcase\主线_for_HW\AP\WIA3200-80
+pybot -i Security -e eap -e Bandwidth_Control -v top:full_top_2_3_21.txt -L Trace -d log\WOA5200-80P\AmOS-2.5.4.013P00R06 -P SKS_product\Lib_Mainline SKS_product\Testcase\主线\AP\WOA5200-80P
+pybot -i EAP_0170 -v top:full_top_5_22_80s.txt -L Trace -d log\WIA3200-80S\debug -P SKS_product\Lib_Mainline SKS_product\Testcase\主线\AP\WIA3200-80S
+pybot -i nat* -v top:test\debug_ruowen.txt -L Trace -d log\主线_for_HW\debug -P SKS_product\Lib_for_HW SKS_product\Testcase\主线_for_HW\AP\WIA3200-80
+pybot -i Webauth_HW -e reboot -v top:test\debug_ruowen.txt -L Trace -d log\主线_for_HW\debug -P SKS_product\Lib_for_HW SKS_product\Testcase\主线_for_HW\AP\WIA3200-80
 环境检查
 pybot -i upgrade -v ap_num:3 -v top:full_top_2_3_21.txt -L Trace -d log\upgrade -P SKS_product\Lib_Mainline 09.tools\01.upgrade
 pybot -i upgrade -v ap_num:3 -v top:full_top_5_22_80s.txt -L Trace -d log\upgrade -P SKS_product\Lib 09.tools\01.upgrade
 pybot -i upgrade -v ap_num:3 -v top:test\debug_chengfang.txt -L Trace -d log\upgrade -P SKS_product\Lib_for_HW 09.tools\01.upgrade
+pybot -i upgrade -v ap_num:3 -v top:test\debug_ruowen.txt -L Trace -d log\upgrade -P SKS_product\Lib_for_HW 09.tools\01.upgrade
 pybot -i Forward_Mode_0110 -i Forward_Mode_0310 -v top:full_top_2_3_21.txt -L Trace -d log\WOA5200-80P\env_check -P SKS_product\Lib_Mainline SKS_product\Testcase\主线\AP\WOA5200-80P
+pybot -i Forward_Mode_0110 -i Forward_Mode_0310 -v top:test\debug_chengfang.txt -L Trace -d log\主线_for_HW\env_check -P SKS_product\Lib_for_HW SKS_product\Testcase\主线_for_HW\AP\WIA3200-80
 
 华为适配晚上连跑
 pybot -i 断网保活 -i NAT* -i Rogue_AP -i NTP -e NAT-interface_0270 -e NAT-interface_0120 -v top:test\debug_ruowen.txt -v session_id:2 -L Trace -d log\主线_for_HW\debug -P SKS_product\Lib_for_HW SKS_product\Testcase\主线_for_HW\AP\WIA3200-80
